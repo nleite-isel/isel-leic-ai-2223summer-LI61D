@@ -108,9 +108,14 @@ del(X, mylist(C, R), mylist(C, R1)) :- % (C4)
 %
 % IMPLEMENTATION #2 - list normal syntax 
 %
+del([], [], []). % (C1)
 
+del([], L, L). % (C2) 
 
-% TO DO
+del(X, [X | Tail], Tail). % (C3) 
+
+del(X, [Y | Tail], [Y | Tail1]) :-   % (C4) 
+	del( X, Tail, Tail1).
 
 
 %?- del([], [], Z).
@@ -131,9 +136,17 @@ Goal2: conc([1, 2], [a], Z).
 %
 % IMPLEMENTATION #1 - list "invented" syntax 
 %
+conc(empty, empty, empty). 
 
+conc(empty, L, L). 
 
-% TO DO
+conc(mylist(C, empty), empty, mylist(C, empty)). 
+
+%conc(mylist(C1, R1), mylist(C2, R2), mylist(C1, R)) :- 
+%	conc(R1, mylist(C2, R2), R).
+% Or:
+conc(mylist(C1, R1), X, mylist(C1, R)) :- 
+	conc(R1, X, R).	
 
 %?- conc(empty, empty, empty).
 %?- conc(mylist(1, empty), mylist(a, empty), Z).
@@ -147,9 +160,14 @@ Goal2: conc([1, 2], [a], Z).
 %
 % IMPLEMENTATION #2 - list normal syntax 
 %
+conc([], [], []). 
 
+conc([], L, L). 
 
-% TO DO
+conc([C], [], [C]). 
+
+conc([C1 | R1], X, [C1 | R]) :- 
+	conc(R1, X, R).	
 
 /*
 ?- conc([], [], []).
@@ -186,13 +204,23 @@ Goal2: reverse(X, [a, b]).
 */
 
 
-% TO DO
+addLast(empty, empty, empty).
 
-%?- addLast(1, lista(a, lista(b, vazio)), Z).
+addLast(X, empty, mylist(X, empty)).
+
+addLast(X, mylist(C, R), mylist(C, Z)) :-
+	addLast(X, R, Z).
+
+%?- addLast(1, mylist(a, mylist(b, empty)), Z).
 
 
+% reverse predicate using addLast predicate
+% reverse (X, Y) 
+reverse (mylist(C, empty), mylist(C, empty)).
 
-% TO DO - reverse predicate using addLast predicate
+reverse (mylist(C, R), Z) :- 
+	reverse (R, Y), 
+	addLast(C, Y, Z).
 
 
 /*
@@ -216,8 +244,11 @@ reverse3(empty, Z, Z).
 reverse3(mylist(C, R), Z, Acc) :- 
 	reverse3(R, Z, mylist(C, Acc)).
 
+reverse(empty, empty). 
 
-% TO DO
+reverse(X, Y) :- 
+	reverse3(X, Y, empty).	
+	
 
 %?- spy(reverse).
 
@@ -226,7 +257,6 @@ reverse3(mylist(C, R), Z, Acc) :-
 %?- reverse(mylist(1, mylist(2, empty)), Z).
 %?- reverse(mylist(1, mylist(2, mylist(a, empty))), Z).
 */
-
 %//////////////////////////////////////////////////////
 
 
